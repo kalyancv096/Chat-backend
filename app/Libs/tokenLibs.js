@@ -1,6 +1,6 @@
+const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const userModel = mongoose.model("users");
-const jwt = require("jsonwebtoken");
 let secret = "mysecret";
 let tokenDetails = (data, cb) => {
   try {
@@ -15,20 +15,14 @@ let tokenDetails = (data, cb) => {
   }
 };
 let verifyToken = (token, tokensecret, cb) => {
-  
-  jwt.verify(token, tokensecret, (err, verifiedToken) => { 
+  jwt.verify(token, tokensecret, (err, verifiedToken) => {
     if (verifiedToken) {
-      userModel.findOne()
+      userModel.findOne();
 
-      cb(verifiedToken, null)
-      
+      cb(verifiedToken, null);
+    } else {
+      cb(null, err);
     }
-    else { 
-      cb(null,err)
-
-    }
-
-
-  })
-}
+  });
+};
 module.exports = { tokenGenerate: tokenDetails };

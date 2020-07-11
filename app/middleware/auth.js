@@ -1,12 +1,12 @@
+const mongoose = require("mongoose");
 let routeHandler = require("../Libs/responseLib");
 let response = require("../Libs/responseLib");
-const Mongoose = require("mongoose");
 let checkLibs = require("../Libs/checkLib");
 const jwt = require("jsonwebtoken");
 const authModel = mongoose.model("auth");
 let isAuthenticated = (req, res, next) => {
   if (req.query.authToken) {
-    authModel.findOne({ authToken: authToken }, (err, result) => {
+    authModel.findOne({ authToken: req.query.authToken }, (err, result) => {
       if (err) {
         let apiResponse = response.generate(
           true,
@@ -15,7 +15,7 @@ let isAuthenticated = (req, res, next) => {
           null
         );
         res.status(404).send(apiResponse);
-      } else if (checkLibs(result)) {
+      } else if (checkLibs.isEmpty(result)) {
         let apiResponse = response.generate(
           true,
           "Authentication token is not present",
@@ -24,24 +24,21 @@ let isAuthenticated = (req, res, next) => {
         );
         res.status(404).send(apiResponse);
       } else {
-        jwt.verifyToken(
-          result.authToken,
-          result.tokenSecret,
-          (err, userDetails) => {
-            if (err) {
-              let apiResponse = response.generate(
-                true,
-                "Error verifying Authentication token",
-                404,
-                null
-              );
-              res.status(404).send(apiResponse);
-            } else {
-              req.user = { userId: userDetails.data.userId };
-              next();
-            }
+        jwt.verify(result.authToken, result.tokenSecret, (err, userDetails) => {
+          if (err) {
+            let apiResponse = response.generate(
+              true,
+              "Error verifying Authentication token",
+              404,
+              null
+            );
+            res.status(404).send(apiResponse);
+          } else {
+            req.user = { userId: userDetails.data.userId };
+            console.log(req.user);
+            next();
           }
-        );
+        });
       }
     });
   } else {
