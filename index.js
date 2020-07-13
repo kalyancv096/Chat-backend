@@ -1,13 +1,15 @@
 const express = require("express");
 const path = require("path");
-const setSocket = require("./app/Libs/eventLibs");
+
 const config = require("./config/appConfig");
 const fs = require("fs");
 const appConfig = require("./config/appConfig");
 const mongoose = require("mongoose");
+let http = require("http");
 const bodyparser = require("body-parser");
 const routeValidator = require("./app/middleware/routeValidation");
 require("./app/models/Users");
+const setSocket = require("./app/Libs/eventLibs");
 let app = express();
 app.use(bodyparser.json());
 const modelPath = "./app/models";
@@ -28,7 +30,9 @@ fs.readdirSync(routePath).forEach(function (file) {
 });
 app.use(routeValidator.routeNotFound);
 
-let server = app.listen(appConfig.PORT, (req, res) => {
+const server = http.createServer(app);
+
+server.listen(appConfig.PORT, (req, res) => {
   console.log("App is running");
   mongoose.connect(appConfig.db.url, {
     useMongoClient: true,
@@ -36,6 +40,7 @@ let server = app.listen(appConfig.PORT, (req, res) => {
   });
 });
 setSocket.setService(server);
+
 mongoose.connection.on("error", function (err) {
   console.log(err);
 });
