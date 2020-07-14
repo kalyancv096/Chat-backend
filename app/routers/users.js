@@ -40,7 +40,6 @@ let users = (app) => {
  */
   app.post(
     `${baseUrl}/signin`,
-    auth.isAuthenticated,
     blogController.signinUsers
   );
 

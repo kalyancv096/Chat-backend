@@ -11,8 +11,8 @@ const authModel = new appSchema({
     unique: true,
   },
   tokenSecret: {
-    type: String,
-    unique: true,
+    type: String
+  
   },
   generatedDate: {
     type: Date,

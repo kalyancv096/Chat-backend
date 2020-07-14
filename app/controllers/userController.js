@@ -143,6 +143,7 @@ const signinUsers = (req, res) => {
             });
             newauthToken.save((err, newTokenDetails) => {
               if (err) {
+                console.log(err)
                 res.userDetails = data.data;
                 let response = apiResponse.generate(
                   true,
