@@ -22,13 +22,14 @@ let chatSocket = () => {
   })
   socket.on(userId, (data) => {
 
-    console.log("you received a message : "+data.senderName)
+    console.log("you received a message : "+data.message)
      console.log(+data.senderName)
 
    });
   $("#send").on('click', function () { 
     let messageText = $("#messageToSend").val()
     chatMessage.message = messageText;
+    console.log('message sent:'+messageText)
     socket.emit("chat-msg",chatMessage)
   })
   

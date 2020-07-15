@@ -18,6 +18,8 @@ let chatSocket = () => {
     socket.emit("set-user", authToken);
   });
   socket.on('userlist', (data) => { 
+
+    console.log('Users currently online are:')
     console.log(data)
   })
    socket.on(userId, (data) => {
@@ -26,7 +28,13 @@ let chatSocket = () => {
    
 
    });
-
+   $("#send").on('click', function () { 
+     let messageText = $("#messageToSend").val()
+     
+    chatMessage.message = messageText;
+    console.log('message sent:'+messageText)
+     socket.emit("chat-msg", chatMessage)
+  })
   
   
   

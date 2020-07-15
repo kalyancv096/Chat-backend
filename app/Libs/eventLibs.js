@@ -12,8 +12,16 @@ let setService = (server) => {
       verifyClaim.verifyTokenWithoutSecret(data, (user, err) => {
         if (user) {
           socket.emit(user.data.userId, "you are online")
-          let userObj = {"userId":user.data.userId, "name":user.data.firstName}
-          socket.emit('userlist',userObj)
+          socket.userId = user.data.userId;
+          socket.userName = user.data.firstName;
+          let userObj = { userId: socket.userId, userName: socket.userName }
+          let userIndex=userlist.map(function (user) {return user.userId }).indexOf(socket.userId)
+          console.log("index:"+userIndex)
+          if (userIndex == -1) {
+            
+            userlist.push(userObj);
+          }
+           socket.emit('userlist', userlist)
           console.log(user);
         } else {
           console.log(err);
